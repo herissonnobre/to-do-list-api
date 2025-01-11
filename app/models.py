@@ -1,10 +1,13 @@
 """
-teste
+Database models for users and tasks.
+
+Classes:
+    - User: Represents a user.
+    - Task: Represents a task.
 """
 
 from datetime import datetime
 
-from sqlalchemy import DateTime
 from sqlalchemy.orm import mapped_column, Mapped, relationship
 
 from app.extensions import db
@@ -12,7 +15,7 @@ from app.extensions import db
 
 class User(db.Model):
     """
-    oi
+    User model.
     """
     __tablename__ = 'users'
     id: Mapped[int] = mapped_column(primary_key=True)
@@ -28,7 +31,7 @@ class User(db.Model):
 
 class Task(db.Model):
     """
-    task
+    Task model.
     """
     __tablename__ = 'tasks'
     id: Mapped[int] = mapped_column(primary_key=True)
@@ -45,8 +48,9 @@ class Task(db.Model):
 
     def as_dict(self):
         """
+        Convert Task object to a dictionary.
 
-        :return:
+        :return: dict: Task attributes as key-value pairs.
         """
         return {
             'id': self.id,

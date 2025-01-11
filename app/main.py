@@ -1,5 +1,8 @@
 """
-:
+Application factory and initialization.
+
+Functions:
+    - create_app(): Creates and configures the Flask application.
 """
 from dotenv import load_dotenv
 from flask import Flask
@@ -10,10 +13,11 @@ from app.routes import register_blueprints
 load_dotenv()
 
 
-def create_app():
+def create_app() -> Flask:
     """
+    Create and configure the Flask application.
 
-    :return:
+    :return:Flask: The configured Flask app instance.
     """
     flask_app = Flask(__name__)
     flask_app.config.from_object(Config)
