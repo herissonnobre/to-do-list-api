@@ -1,3 +1,7 @@
+"""
+Unit tests for JWT token generation and verification using pytest.
+"""
+
 import uuid
 from datetime import timedelta, datetime
 from unittest.mock import patch
@@ -8,7 +12,10 @@ import pytest
 from app.utils.token import generate_token, verify_token
 
 
-def test_generate_token():
+def test_generate_token() -> None:
+    """
+    Test JWT token generation.
+    """
     user_id = uuid.uuid4().hex
 
     with patch('app.utils.token.SECRET_KEY', "secret"):
@@ -23,7 +30,11 @@ def test_generate_token():
     assert 'iat' in payload
 
 
-def test_verify_token():
+def test_verify_token() -> None:
+    """
+    Test valid JWT token verification.
+    :return:
+    """
     user_id = uuid.uuid4().hex
 
     payload = {
@@ -40,7 +51,10 @@ def test_verify_token():
         assert decoded_user_id == user_id
 
 
-def test_verify_token_expired():
+def test_verify_token_expired() -> None:
+    """
+    Test expired JWT token verification.
+    """
     user_id = uuid.uuid4().hex
 
     payload = {
@@ -56,7 +70,10 @@ def test_verify_token_expired():
             verify_token(token)
 
 
-def test_verify_token_invalid():
+def test_verify_token_invalid() -> None:
+    """
+    Test invalid JWT token verification.
+    """
     token = "it.is.not.a.token"
 
     with patch('app.utils.token.SECRET_KEY', "secret"):
