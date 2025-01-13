@@ -27,7 +27,7 @@ as the project progresses.
     git clone https://github.com/herissonnobre/to-do-list-api.git
     ```
 
-2. Navigate to the projecto directory:
+2. Navigate to the project directory:
     ```sh
     cd repository
     ```
