@@ -5,9 +5,10 @@ Classes:
     - User: Represents a user.
     - Task: Represents a task.
 """
-
+import uuid
 from datetime import datetime
 
+from sqlalchemy import UUID
 from sqlalchemy.orm import mapped_column, Mapped, relationship
 
 from app.extensions import db
@@ -18,7 +19,7 @@ class User(db.Model):
     User model.
     """
     __tablename__ = 'users'
-    id: Mapped[int] = mapped_column(primary_key=True)
+    id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     email: Mapped[str] = mapped_column(unique=True, nullable=False)
     password: Mapped[str] = mapped_column(nullable=False)
     created_at: Mapped[datetime] = mapped_column(default=datetime.now)
@@ -34,13 +35,13 @@ class Task(db.Model):
     Task model.
     """
     __tablename__ = 'tasks'
-    id: Mapped[int] = mapped_column(primary_key=True)
+    id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     title: Mapped[str] = mapped_column(nullable=False)
     description: Mapped[str] = mapped_column(nullable=False)
     completed: Mapped[bool] = mapped_column(default=False)
     created_at: Mapped[datetime] = mapped_column(default=datetime.now)
 
-    user_id: Mapped[int] = mapped_column(db.ForeignKey('users.id'), nullable=False)
+    user_id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), db.ForeignKey('users.id'), nullable=False)
     user: Mapped['User'] = relationship('User', back_populates='tasks')
 
     def __repr__(self):

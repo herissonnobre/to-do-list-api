@@ -73,6 +73,6 @@ def login():
     if not user or not check_password_hash(user.password, data['password']):
         return jsonify({"message": "Invalid email or password"}), 401
 
-    token = generate_token(user.id)
+    token = generate_token(str(user.id))
 
     return jsonify({"token": token}), 200
