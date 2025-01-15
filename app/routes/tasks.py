@@ -84,7 +84,7 @@ def update_task(task_id):
     """
     data = request.get_json()
 
-    task = Task.query.filter_by(id=task_id, user_id=request.user_id).first()
+    task = Task.query.filter_by(id=uuid.UUID(task_id), user_id=request.user_id).first()
 
     if not task:
         return jsonify({"message": "Task not found"}), 404
@@ -105,7 +105,7 @@ def delete_task(task_id):
     :param task_id:
     :return:
     """
-    task = Task.query.filter_by(id=task_id, user_id=request.user_id).first()
+    task = Task.query.filter_by(id=uuid.UUID(task_id), user_id=request.user_id).first()
 
     if not task:
         return jsonify({"message": "Task not found"}), 404
