@@ -132,3 +132,87 @@ def test_get_task_by_id_not_exist(client, user):
     response = client.get(f'/tasks/{fake_uuid}', headers={'Authorization': user})
 
     assert response.status_code == 404
+
+
+def test_update_task(client, user):
+    create_response = client.post('/tasks/', headers={'Authorization': user}, json={
+        'title': 'New Task',
+        'description': 'A new task',
+    })
+
+    task_id = create_response.get_json()['id']
+
+    response = client.put(f'/tasks/{task_id}', headers={'Authorization': user}, json={
+        'title': 'Updated Task',
+        'description': 'A new task',
+    })
+
+    json_data = response.get_json()
+
+    assert response.status_code == 200
+    assert json_data['title'] == 'Updated Task'
+    assert json_data['description'] == 'A new task'
+
+
+def test_update_task_unauthenticated(client, user):
+    create_response = client.post('/tasks/', headers={'Authorization': user}, json={
+        'title': 'New Task',
+        'description': 'A new task',
+    })
+
+    task_id = create_response.get_json()['id']
+
+    response = client.put(f'/tasks/{task_id}', json={
+        'title': 'Updated Task',
+        'description': 'A new task',
+    })
+
+    assert response.status_code == 401
+
+
+def test_update_task_not_exist(client, user):
+    fake_uuid = uuid.uuid4()
+
+    response = client.put(f'/tasks/{fake_uuid}', headers={'Authorization': user}, json={
+        'title': 'Updated Task',
+        'description': 'A new task',
+    })
+
+    assert response.status_code == 404
+
+
+def test_delete_task(client, user):
+    create_response = client.post('/tasks/', headers={'Authorization': user}, json={
+        'title': 'New Task',
+        'description': 'A new task',
+    })
+
+    task_id = create_response.get_json()['id']
+
+    response = client.delete(f'/tasks/{task_id}', headers={'Authorization': user})
+
+    json_data = response.get_json()
+
+    assert response.status_code == 200
+    assert json_data['message'] == 'Task deleted successfully'
+
+
+def test_delete_task_unauthenticated(client, user):
+    create_response = client.post('/tasks/', headers={'Authorization': user}, json={
+        'title': 'New Task',
+        'description': 'A new task',
+    })
+
+    task_id = create_response.get_json()['id']
+
+    response = client.delete(f'/tasks/{task_id}')
+
+    assert response.status_code == 401
+
+
+def test_delete_task_not_exist(client, user):
+    fake_uuid = uuid.uuid4()
+
+    response = client.delete(f'/tasks/{fake_uuid}', headers={'Authorization': user})
+
+    assert response.status_code == 404
