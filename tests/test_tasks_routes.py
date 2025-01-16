@@ -1,3 +1,27 @@
+"""
+Unit tests for tasks endpoints using pytest.
+
+Fixtures:
+    - app: Sets up and tears down the Flask testing application.
+    - client: Creates a test client for the Flask testing application.
+    - user: Registers and logs in a user, returning a JWT token.
+
+Tests:
+    - test_create_task: Tests creating a new task.
+    - test_create_task_unauthenticated: Tests creating a new task without authentication.
+    - test_get_tasks: Tests getting all tasks.
+    - test_get_tasks_unauthenticated: Tests getting all tasks without authentication.
+    - test_get_task_by_id: Tests getting a single task.
+    - test_get_task_by_id_unauthenticated: Tests getting a single task without authentication.
+    - test_get_task_by_id_not_exist: Tests getting a single task without an existing task with the given ID.
+    - test_update_task: Tests updating a single task.
+    - test_update_task_unauthenticated: Tests updating a single task without authentication.
+    - test_update_task_not_exist: Tests updating a single task without an existing task.
+    - test_delete_task: Tests deleting a single task.
+    - test_delete_task_unauthenticated: Tests deleting a single task without authentication.
+    - test_delete_task_not_exist: Tests deleting a single task without an existing task.
+"""
+
 import uuid
 
 import pytest
@@ -10,7 +34,7 @@ from app.routes import tasks_blueprint, auth_blueprint
 @pytest.fixture
 def app():
     """
-    app fixture
+    Set up and tear down the Flask testing application.
     """
     app = Flask(__name__)
     app.config['TESTING'] = True
@@ -28,9 +52,7 @@ def app():
 @pytest.fixture
 def client(app):
     """
-
-    :param app:
-    :return:
+    Create a test client for the Flask app.
     """
     return app.test_client()
 
@@ -38,9 +60,7 @@ def client(app):
 @pytest.fixture
 def user(client):
     """
-
-    :param client:
-    :return:
+    Register and log in a user, returning a JWT token.
     """
     client.post('/auth/register', json={'email': 'test@example.com', 'password': 'testpassword'})
 
@@ -52,6 +72,9 @@ def user(client):
 
 
 def test_create_task(client, user):
+    """
+    Test creating a new task.
+    """
     response = client.post('/tasks/', headers={'Authorization': user}, json={
         'title': 'New Task',
         'description': 'A new task',
@@ -65,6 +88,9 @@ def test_create_task(client, user):
 
 
 def test_create_task_unauthenticated(client):
+    """
+    Test creating a new task without authentication.
+    """
     response = client.post('/tasks/', json={
         'title': 'New Task',
         'description': 'A new task',
@@ -74,6 +100,9 @@ def test_create_task_unauthenticated(client):
 
 
 def test_get_tasks(client, user):
+    """
+    Test getting all tasks.
+    """
     client.post('/tasks/', headers={'Authorization': user}, json={
         'title': 'New Task 1',
         'description': 'A new task 1',
@@ -92,12 +121,18 @@ def test_get_tasks(client, user):
 
 
 def test_get_tasks_unauthenticated(client):
+    """
+    Test getting all tasks without authentication.
+    """
     response = client.get('/tasks/')
 
     assert response.status_code == 401
 
 
 def test_get_task_by_id(client, user):
+    """
+    Test getting a single task.
+    """
     create_response = client.post('/tasks/', headers={'Authorization': user}, json={
         'title': 'New Task',
         'description': 'A new task',
@@ -114,6 +149,9 @@ def test_get_task_by_id(client, user):
 
 
 def test_get_task_by_id_unauthenticated(client, user):
+    """
+    Test getting a single task without authentication.
+    """
     create_response = client.post('/tasks/', headers={'Authorization': user}, json={
         'title': 'New Task',
         'description': 'A new task',
@@ -127,6 +165,9 @@ def test_get_task_by_id_unauthenticated(client, user):
 
 
 def test_get_task_by_id_not_exist(client, user):
+    """
+    Test getting a single task without an existing task.
+    """
     fake_uuid = uuid.uuid4()
 
     response = client.get(f'/tasks/{fake_uuid}', headers={'Authorization': user})
@@ -135,6 +176,9 @@ def test_get_task_by_id_not_exist(client, user):
 
 
 def test_update_task(client, user):
+    """
+    Test updating a single task.
+    """
     create_response = client.post('/tasks/', headers={'Authorization': user}, json={
         'title': 'New Task',
         'description': 'A new task',
@@ -155,6 +199,9 @@ def test_update_task(client, user):
 
 
 def test_update_task_unauthenticated(client, user):
+    """
+    Test updating a single task without authentication.
+    """
     create_response = client.post('/tasks/', headers={'Authorization': user}, json={
         'title': 'New Task',
         'description': 'A new task',
@@ -171,6 +218,9 @@ def test_update_task_unauthenticated(client, user):
 
 
 def test_update_task_not_exist(client, user):
+    """
+    Test updating a single task without an existing task.
+    """
     fake_uuid = uuid.uuid4()
 
     response = client.put(f'/tasks/{fake_uuid}', headers={'Authorization': user}, json={
@@ -182,6 +232,9 @@ def test_update_task_not_exist(client, user):
 
 
 def test_delete_task(client, user):
+    """
+    Test deleting a single task.
+    """
     create_response = client.post('/tasks/', headers={'Authorization': user}, json={
         'title': 'New Task',
         'description': 'A new task',
@@ -198,6 +251,9 @@ def test_delete_task(client, user):
 
 
 def test_delete_task_unauthenticated(client, user):
+    """
+    Test deleting a single task without authentication.
+    """
     create_response = client.post('/tasks/', headers={'Authorization': user}, json={
         'title': 'New Task',
         'description': 'A new task',
@@ -211,6 +267,9 @@ def test_delete_task_unauthenticated(client, user):
 
 
 def test_delete_task_not_exist(client, user):
+    """
+    Test deleting a single task without an existing task.
+    """
     fake_uuid = uuid.uuid4()
 
     response = client.delete(f'/tasks/{fake_uuid}', headers={'Authorization': user})
