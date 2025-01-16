@@ -22,7 +22,7 @@ load_dotenv()
 SECRET_KEY = os.getenv('SECRET_KEY')
 
 
-def generate_token(user_id: str):
+def generate_token(user_id: str) -> str:
     """
     Generates a JWT token for a specific user.
 
@@ -50,7 +50,7 @@ def generate_token(user_id: str):
         raise Exception(f"An error occurred while generating the token: {e}")
 
 
-def verify_token(token):
+def verify_token(token) -> str:
     """
     Verifies if a JWT token is valid and returns the user ID.
 

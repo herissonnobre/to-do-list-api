@@ -8,7 +8,7 @@ Functions:
 Decorators:
     - @auth_blueprint.route(): Defines routes for registration and login.
 """
-from flask import Blueprint, request, jsonify
+from flask import Blueprint, request, jsonify, Response
 from werkzeug.security import generate_password_hash, check_password_hash
 
 from app.extensions import db
@@ -19,7 +19,7 @@ auth_blueprint = Blueprint('auth', __name__)
 
 
 @auth_blueprint.route('/register', methods=['POST'])
-def register():
+def register() -> tuple[Response, int]:
     """
     Registers a new user.
 
@@ -51,7 +51,7 @@ def register():
 
 
 @auth_blueprint.route('/login', methods=['POST'])
-def login():
+def login() -> tuple[Response, int]:
     """
     Logs in a user and returns a JWT token.
 
