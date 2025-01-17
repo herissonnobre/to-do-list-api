@@ -4,9 +4,11 @@ Application factory and initialization.
 Functions:
     - create_app(): Creates and configures the Flask application.
 """
+import os
+
 from dotenv import load_dotenv
 from flask import Flask
-from app.config import Config
+from app.config import ProductionConfig, DevelopmentConfig
 from app.extensions import db, migrate
 from app.routes import register_blueprints
 
@@ -20,7 +22,13 @@ def create_app() -> Flask:
     :return:Flask: The configured Flask app instance.
     """
     flask_app = Flask(__name__)
-    flask_app.config.from_object(Config)
+
+    env = os.environ.get("FLASK_ENV", 'development')
+
+    if env == 'production':
+        flask_app.config.from_object(ProductionConfig)
+    else:
+        flask_app.config.from_object(DevelopmentConfig)
 
     db.init_app(flask_app)
     migrate.init_app(flask_app, db)
